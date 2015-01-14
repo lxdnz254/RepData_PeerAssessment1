@@ -6,8 +6,13 @@ output:
 ---
 # Reproducible Research: Peer Assesment 1
 
+This assesement assumes that the data file ("activity.zip") has already been downlaoded and is stored in the working directory before running knit2HTML to produce the assesment files.
 
 ## Loading and preprocessing the data
+
+The following code unzips the data file then reads in the data to a datatable 
+It then creates a 'time' column by extracting the given 'intervals' and converting them to 24 hour format.
+Converting the date to class(POSIXct) also allows us to join together the date and time into one column 'datetime'
 
 
 ```r
@@ -20,8 +25,6 @@ data$time <- substr(as.POSIXlt(sprintf("%04.0f", data$interval),
 data$date <- ymd(data$date)
 data$datetime <- ymd_hm(paste(data$date, data$time))
 ```
-
-
 
 
 ## What is mean total number of steps taken per day?
@@ -75,7 +78,7 @@ legend("topright", legend = c("mean",
 
 ![plot of chunk unnamed-chunk-5](figure/unnamed-chunk-5-1.png) 
 
-But its hard to see the difference in the mean and median lines.  
+But its hard to see if there is a difference between the mean and median lines.  
 So we can zoom in for a closer look with
 
 
@@ -90,7 +93,7 @@ legend("topright", legend = c("mean", "median"),
 
 ![plot of chunk unnamed-chunk-6](figure/unnamed-chunk-6-1.png) 
 
-Now we can see the difference between mean and median.
+Now we can see there is a difference between mean and median.
 
 ## What is the average daily activity pattern?
 
