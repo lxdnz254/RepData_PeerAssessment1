@@ -4,6 +4,7 @@ output:
   html_document:
     keep_md: true
 ---
+# Reproducible Research: Peer Assesment 1
 
 
 ## Loading and preprocessing the data
@@ -24,6 +25,8 @@ data$datetime <- ymd_hm(paste(data$date, data$time))
 
 
 ## What is mean total number of steps taken per day?
+
+First arrange the data into groups by date and find the sum of each groups steps taken
 
 
 ```r
@@ -55,8 +58,10 @@ summary <- function(x) {
 meandat <- as.data.table(summary(sdata$Totalsteps))
 setnames(meandat, 1:2, c("mean", "median"))
 ```
-The mean is 1.0766189 &times; 10<sup>4</sup> and the median is 10765.
+
+The mean is 1.0766189 &times; 10<sup>4</sup> and the median is 10765.  
 We can show that on the histogram by
+
 
 ```r
 hist(sdata$Totalsteps, main = "Daily Steps",
@@ -69,8 +74,10 @@ legend("topright", legend = c("mean",
 ```
 
 ![plot of chunk unnamed-chunk-5](figure/unnamed-chunk-5-1.png) 
-But its hard to see the difference in the mean and meadian lines.
+
+But its hard to see the difference in the mean and median lines.  
 So we can zoom in for a closer look with
+
 
 ```r
 hist(sdata$Totalsteps, main = "Daily Steps",
@@ -82,6 +89,7 @@ legend("topright", legend = c("mean", "median"),
 ```
 
 ![plot of chunk unnamed-chunk-6](figure/unnamed-chunk-6-1.png) 
+
 Now we can see the difference between mean and median.
 
 ## What is the average daily activity pattern?
