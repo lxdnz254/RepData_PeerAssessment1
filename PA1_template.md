@@ -57,12 +57,11 @@ summary <- function(x) {
         funs <- c(mean, median)
         lapply(funs, function(f) f(x, na.rm = TRUE))
 }
-
 meandat <- as.data.table(summary(sdata$Totalsteps))
 setnames(meandat, 1:2, c("mean", "median"))
 ```
 
-The mean is 1.0766189 &times; 10<sup>4</sup> and the median is 10765.  
+The mean is 10766.19 and the median is 10765.  
 We can show that on the histogram by
 
 
@@ -97,6 +96,33 @@ Now we can see there is a difference between mean and median.
 
 ## What is the average daily activity pattern?
 
+First group the data by time and get the mean of each group
+
+
+```r
+tdata <- data %>%
+        group_by(time) %>%
+        summarise(Meansteps = mean(steps, na.rm=TRUE)) 
+```
+
+plot the data
+
+
+```r
+with(tdata, {plot(Meansteps~factor(time), type="l")
+             lines(Meansteps~factor(time), type = "l")})
+```
+
+![plot of chunk unnamed-chunk-8](figure/unnamed-chunk-8-1.png) 
+
+Find the maximum 5 minute interval
+
+
+```r
+maxt <- subset(tdata, tdata$Meansteps == max(tdata$Meansteps))
+```
+
+And we can see maximum time interval is 08:35 at 206.17 steps
 
 
 ## Imputing missing values

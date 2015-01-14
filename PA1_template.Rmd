@@ -51,12 +51,11 @@ summary <- function(x) {
         funs <- c(mean, median)
         lapply(funs, function(f) f(x, na.rm = TRUE))
 }
-
 meandat <- as.data.table(summary(sdata$Totalsteps))
 setnames(meandat, 1:2, c("mean", "median"))
 ```
 
-The mean is `r meandat$mean` and the median is `r meandat$median`.  
+The mean is `r sprintf("%0.2f", meandat$mean)` and the median is `r meandat$median`.  
 We can show that on the histogram by
 
 ```{r, echo=TRUE}
@@ -67,7 +66,6 @@ abline(v=median(sdata$Totalsteps, na.rm=TRUE), col = "black", lty = 2)
 legend("topright", legend = c("mean",
                               "median"), 
        lty = c(1,2), col = c("red", "black"))
-
 ```
 
 But its hard to see if there is a difference between the mean and median lines.  
@@ -86,6 +84,28 @@ Now we can see there is a difference between mean and median.
 
 ## What is the average daily activity pattern?
 
+First group the data by time and get the mean of each group
+
+```{r,echo=TRUE}
+tdata <- data %>%
+        group_by(time) %>%
+        summarise(Meansteps = mean(steps, na.rm=TRUE)) 
+```
+
+plot the data
+
+```{r,echo=TRUE}
+with(tdata, {plot(Meansteps~factor(time), type="l")
+             lines(Meansteps~factor(time), type = "l")})
+```
+
+Find the maximum 5 minute interval
+
+```{r,echo=TRUE}
+maxt <- subset(tdata, tdata$Meansteps == max(tdata$Meansteps))
+```
+
+And we can see maximum time interval is `r maxt$time` at `r sprintf("%0.2f", max(tdata$Meansteps))` steps
 
 
 ## Imputing missing values
