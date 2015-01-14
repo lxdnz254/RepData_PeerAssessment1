@@ -55,6 +55,34 @@ summary <- function(x) {
 meandat <- as.data.table(summary(sdata$Totalsteps))
 setnames(meandat, 1:2, c("mean", "median"))
 ```
+The mean is 1.0766189 &times; 10<sup>4</sup> and the median is 10765.
+We can show that on the histogram by
+
+```r
+hist(sdata$Totalsteps, main = "Daily Steps",
+     xlab = "Total Daily Steps", col = "cyan")
+abline(v=mean(sdata$Totalsteps, na.rm=TRUE), col ="red")
+abline(v=median(sdata$Totalsteps, na.rm=TRUE), col = "black", lty = 2)
+legend("topright", legend = c("mean",
+                              "median"), 
+       lty = c(1,2), col = c("red", "black"))
+```
+
+![plot of chunk unnamed-chunk-5](figure/unnamed-chunk-5-1.png) 
+But its hard to see the difference in the mean and meadian lines.
+So we can zoom in for a closer look with
+
+```r
+hist(sdata$Totalsteps, main = "Daily Steps",
+        xlab = "Total Daily Steps", col = "cyan", xlim = c(10760, 10770))
+abline(v=mean(sdata$Totalsteps, na.rm=TRUE), col ="red")
+abline(v=median(sdata$Totalsteps, na.rm=TRUE), col = "black", lty = 2)
+legend("topright", legend = c("mean", "median"), 
+               lty = c(1,2), col = c("red", "black"))
+```
+
+![plot of chunk unnamed-chunk-6](figure/unnamed-chunk-6-1.png) 
+Now we can see the difference between mean and median.
 
 ## What is the average daily activity pattern?
 
