@@ -8,7 +8,8 @@ output:
 
 ## Loading and preprocessing the data
 
-```{r, echo=TRUE}
+
+```r
 library(data.table)
 library(lubridate)
 unzip("activity.zip")
@@ -24,7 +25,8 @@ data$datetime <- ymd_hm(paste(data$date, data$time))
 
 ## What is mean total number of steps taken per day?
 
-```{r, echo=TRUE}
+
+```r
 library(dplyr)
 sdata <- data %>%
         group_by(date) %>%
@@ -33,14 +35,18 @@ sdata <- data %>%
 
 Produce histogram of total steps    
      
-```{r,echo=TRUE}
+
+```r
 hist(sdata$Totalsteps, main = "Daily Steps",
      xlab = "Total Daily Steps", col = "cyan")
 ```
 
+![plot of chunk unnamed-chunk-3](figure/unnamed-chunk-3-1.png) 
+
 Find mean and median
 
-```{r,echo=TRUE}
+
+```r
 summary <- function(x) {
         funs <- c(mean, median)
         lapply(funs, function(f) f(x, na.rm = TRUE))
