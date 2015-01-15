@@ -55,7 +55,7 @@ meandat <- as.data.table(summary(sdata$Totalsteps))
 setnames(meandat, 1:2, c("mean", "median"))
 ```
 
-The mean is `r sprintf("%0.2f", meandat$mean)` and the median is `r meandat$median`.  
+The mean is `meandat$mean` `r sprintf("%0.2f", meandat$mean)` and the median is `meandat$median` `r meandat$median`.  
 We can show that on the histogram by
 
 ```{r, echo=TRUE}
@@ -95,7 +95,8 @@ tdata <- data %>%
 plot the data
 
 ```{r,echo=TRUE}
-with(tdata, {plot(Meansteps~factor(time), type="l")
+with(tdata, {plot(Meansteps~factor(time), type="l", xlab = "time", 
+                  ylab ="Mean daily steps")
              lines(Meansteps~factor(time), type = "l")})
 ```
 
@@ -105,11 +106,47 @@ Find the maximum 5 minute interval
 maxt <- subset(tdata, tdata$Meansteps == max(tdata$Meansteps))
 ```
 
-And we can see maximum time interval is `r maxt$time` at `r sprintf("%0.2f", max(tdata$Meansteps))` steps
+And we can see maximum time interval is `max$time` `r maxt$time` at `max(tdata$Meansteps)` `r sprintf("%0.2f", max(tdata$Meansteps))` steps
 
 
 ## Imputing missing values
 
+Calculate and report the total number of missing values.
+```{r,echo=TRUE}
+missing <- length(which(is.na(data)))
+```
+The total number of rows with NAs is `missing` `r missing`
+
+My strategy to replace NAs with values is to take the mean of each 5 minute interval and use that value for the corresponding NA (i.e a NA at 08:05 will be replaced with the mean of 08:05 as worked out in the the last section and stored in the datatable 'tdata')
+
+```{r,echo=TRUE}
+datam <- merge(data, tdata, by="time")
+datam$steps[is.na(datam$steps)] <- datam$Meansteps[is.na(datam$steps)]
+```
+
+Histogram of the Total number of steps taken each day from the new data set
+
+```{r,echo=TRUE}
+smdata <- datam %>%
+        group_by(date) %>%
+        summarise(Totalsteps = sum(steps))
+hist(smdata$Totalsteps, main = "Daily Steps",
+     xlab = "Total Daily Steps", col = "cyan")
+meandatm <- as.data.table(summary(smdata$Totalsteps))
+setnames(meandatm, 1:2, c("mean", "median"))
+```
+
+The mean of the new data set is `meandatm$mean` `r sprintf("%0.2f", meandatm$mean)`  
+The median of the new data set is `meandatm$median` `r sprintf("%0.2f", meandatm$median)`
+
+### Are the values the same?
+
+Mean of part 1 equals Mean of part 3? `meandat$mean == meandatm$mean` `r meandat$mean == meandatm$mean`  
+Median of part 1 equals Median of part 3 `meandat$median == meandatm$median` `r meandat$median == meandatm$median`
+
+By replacing the missing values with the mean of all days corresponding to that particular 5 minute interval, it has not changed the mean value of the original data but has shifted the median value which is now equal to the mean as well.
+
+New mean value equals new median value? `meandatm$mean == meandat$median` `r meandatm$mean == meandatm$median`
 
 
 ## Are there differences in activity patterns between weekdays and weekends?

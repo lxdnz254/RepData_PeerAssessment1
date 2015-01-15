@@ -61,7 +61,7 @@ meandat <- as.data.table(summary(sdata$Totalsteps))
 setnames(meandat, 1:2, c("mean", "median"))
 ```
 
-The mean is 10766.19 and the median is 10765.  
+The mean is `meandat$mean` 10766.19 and the median is `meandat$median` 10765.  
 We can show that on the histogram by
 
 
@@ -109,7 +109,8 @@ plot the data
 
 
 ```r
-with(tdata, {plot(Meansteps~factor(time), type="l")
+with(tdata, {plot(Meansteps~factor(time), type="l", xlab = "time", 
+                  ylab ="Mean daily steps")
              lines(Meansteps~factor(time), type = "l")})
 ```
 
@@ -122,11 +123,55 @@ Find the maximum 5 minute interval
 maxt <- subset(tdata, tdata$Meansteps == max(tdata$Meansteps))
 ```
 
-And we can see maximum time interval is 08:35 at 206.17 steps
+And we can see maximum time interval is `max$time` 08:35 at `max(tdata$Meansteps)` 206.17 steps
 
 
 ## Imputing missing values
 
+Calculate and report the total number of missing values.
+
+```r
+missing <- length(which(is.na(data)))
+```
+The total number of rows with NAs is `missing` 2304
+
+My strategy to replace NAs with values is to take the mean of each 5 minute interval and use that value for the corresponding NA (i.e a NA at 08:05 will be replaced with the mean of 08:05 as worked out in the the last section and stored in the datatable 'tdata')
+
+
+```r
+datam <- merge(data, tdata, by="time")
+datam$steps[is.na(datam$steps)] <- datam$Meansteps[is.na(datam$steps)]
+```
+
+Histogram of the Total number of steps taken each day from the new data set
+
+
+```r
+smdata <- datam %>%
+        group_by(date) %>%
+        summarise(Totalsteps = sum(steps))
+hist(smdata$Totalsteps, main = "Daily Steps",
+     xlab = "Total Daily Steps", col = "cyan")
+```
+
+![plot of chunk unnamed-chunk-12](figure/unnamed-chunk-12-1.png) 
+
+```r
+meandatm <- as.data.table(summary(smdata$Totalsteps))
+setnames(meandatm, 1:2, c("mean", "median"))
+```
+
+The mean of the new data set is `meandatm$mean` 10766.19  
+The median of the new data set is `meandatm$median` 10766.19
+
+### Are the values the same?
+
+Mean of part 1 equals Mean of part 3? `meandat$mean == meandatm$mean` TRUE  
+Median of part 1 equals Median of part 3 `meandat$median == meandatm$median` FALSE
+
+By replacing the missing values with the mean of all days corresponding to that particular 5 minute interval, it has not changed the mean value of the original data but has shifted the median value which is now equal to the mean as well.
+
+New mean value equals new median value? `meandatm$mean == meandat$median` TRUE
 
 
 ## Are there differences in activity patterns between weekdays and weekends?
