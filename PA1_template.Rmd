@@ -106,7 +106,7 @@ Find the maximum 5 minute interval
 maxt <- subset(tdata, tdata$Meansteps == max(tdata$Meansteps))
 ```
 
-And we can see maximum time interval is `max$time` `r maxt$time` at `max(tdata$Meansteps)` `r sprintf("%0.2f", max(tdata$Meansteps))` steps
+And we can see maximum time interval is `maxt$time` `r maxt$time` at `max(tdata$Meansteps)` `r sprintf("%0.2f", max(tdata$Meansteps))` steps
 
 
 ## Imputing missing values
