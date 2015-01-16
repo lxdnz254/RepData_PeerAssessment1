@@ -175,3 +175,45 @@ New mean value equals new median value? `meandatm$mean == meandat$median` TRUE
 
 
 ## Are there differences in activity patterns between weekdays and weekends?
+
+Sort new data by weekdays or weekends, add to datatable as Factor of two levels
+
+
+```r
+datam = within(datam, {
+        DOWGroup = as.factor( 
+                ifelse((weekdays(datam$date, abbreviate=TRUE) 
+                         %in% c("Sat","Sun")) 
+                        , "weekend", "weekday"))})
+```
+
+Prepare the data and find the means of the steps in each group "weekday" or "weekend"
+
+
+```r
+TWdata <- as.data.table(
+        aggregate(steps ~ DOWGroup + time 
+                  , data=datam
+                  , FUN="mean")
+)
+setnames(TWdata, c(3), "AvgSteps")
+```
+
+Using the (lattice) library create timeline panel plot of the two Factor groups
+
+
+```r
+library(lattice)
+xyplot(
+        AvgSteps ~ factor(time) | DOWGroup
+        , data=TWdata
+        , layout=c(1,2)
+        , main="Time Series: Avg Steps vs 5-Minute interval ID, Split by DOW Group"
+        , xlab="5-Minute interval"
+        , ylab="Average Steps Taken"
+        , type=c("l","l")
+)
+```
+
+![plot of chunk unnamed-chunk-15](figure/unnamed-chunk-15-1.png) 
+
